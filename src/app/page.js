@@ -126,7 +126,7 @@ const ExcelToConfluence = () => {
                 <ac:structured-macro ac:macro-id="93fe5885-4757-4e1c-acbf-fe524e38535d" ac:name="expand" ac:schema-version="1">
                   <ac:parameter ac:name="title">Screen Capture</ac:parameter>
                   <ac:rich-text-body>
-                    <p>masukan gambar</p>
+                    <p>no image</p>
                   </ac:rich-text-body>
                 </ac:structured-macro>
               </div>
