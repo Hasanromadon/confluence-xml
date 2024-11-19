@@ -53,16 +53,39 @@ const ExcelToConfluence = () => {
   const sanitizeExcelData = (data) => {
     return data.map((row) => {
       const sanitizedRow = {};
+  
       Object.keys(row).forEach((key) => {
         const cellValue = row[key];
-        sanitizedRow[key] =
-          typeof cellValue === "string"
-            ? cellValue.replace(/(?:\r\n|\r|\n)/g, "<br/>")
-            : cellValue;
+  
+        // Sanitize string values and replace newlines with <br/>
+        if (typeof cellValue === "string") {
+          const sanitizedValue = cellValue.replace(/(?:\r\n|\r|\n)/g, "<br/>");
+  
+          // Process "Cucumber Scenario" key
+          if (key === "Cucumber Scenario" && sanitizedValue.includes("Then")) {
+            const expectedStartIndex = sanitizedValue.indexOf("Then");
+  
+            // Extract "Expected" value
+            const expectedValue = sanitizedValue.substring(expectedStartIndex);
+  
+            // Remove "Then" sentence from "Cucumber Scenario"
+            sanitizedRow[key] = sanitizedValue.substring(0, expectedStartIndex).trim();
+  
+            // Assign "Expected" value
+            sanitizedRow["Expected"] = expectedValue;
+          } else {
+            sanitizedRow[key] = sanitizedValue;
+          }
+        } else {
+          sanitizedRow[key] = cellValue;
+        }
       });
+  
       return sanitizedRow;
     });
   };
+  
+  
 
   const generateConfluenceMarkup = (data) => {
     return data
@@ -93,7 +116,7 @@ const ExcelToConfluence = () => {
               <em>*) coret salah satu melalui menu strikethrough pada toolbar confluence</em>
             </td>
           </tr>
-        <tr><td><strong>Results</strong></td><td>${row.Results || ""}</td></tr>
+        <tr><td><strong>Expected</strong></td><td>${row.Expected || ""}</td></tr>
          <tr class="">
             <td>
               <strong>Screen Capture</strong>
